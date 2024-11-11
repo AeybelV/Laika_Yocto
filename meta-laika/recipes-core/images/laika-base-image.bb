@@ -6,4 +6,5 @@ inherit core-image
 IMAGE_INSTALL += '\
     os-release \
     bash \
+    util-linux \
     '
