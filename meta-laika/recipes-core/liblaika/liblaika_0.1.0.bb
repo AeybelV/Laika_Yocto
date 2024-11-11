@@ -9,11 +9,23 @@ S = "${WORKDIR}/git"
 inherit cargo
 
 do_install() {
+    # libs
     install -d ${D}${libdir}
-    install -m 0755 ${B}/target/${CARGO_TARGET_SUBDIR}/liblaika.so ${D}${libdir}/liblaika.so.0.1.0
-    ln -sf liblaika.so.0.1.0 ${D}${libdir}/liblaika.so  # Create symlink to the versioned library
-
+    install -m 0755 ${B}/target/${CARGO_TARGET_SUBDIR}/liblaika.so ${D}${libdir}/liblaika.so.${PV}
+    ln -s -r ${D}${libdir}/liblaika.so.${PV} ${D}${libdir}/liblaika.so  # Create symlink to the versioned library
+    
+    #includes
+    install -d ${D}${includedir}/liblaika
+    install -m 0644 ${S}/include/liblaika.h ${D}${includedir}/liblaika/
 }
+
+# Split the package for library and dev files
+FILES_SOLIBSDEV = ""
+FILES_SOLIBS = ""
+FILES:${PN} += "${libdir}/*.so*"
+FILES:${PN}-dev += "${includedir}/liblaika/*"
+FILES:${PN}-dbg += "${libdir}/.debug/*"
+INSANE_SKIP:${PN} = "dev-so"
 
 # Ensure the shared library is built
 CARGO_BUILD_TARGET ?= "${TARGET_SYS}"
