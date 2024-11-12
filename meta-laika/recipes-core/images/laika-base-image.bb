@@ -12,5 +12,5 @@ IMAGE_INSTALL += '\
     g++ \
     make \
     util-linux \
-    liblaika \
+    liblaika-dev \
     '
